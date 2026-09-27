@@ -1,0 +1,43 @@
+:root {
+    --bg-colour: #222;
+    --text-colour: #EEE;
+    --chart-bg-colour: #5C2200;
+    --string-colour: #DDD;
+    --open-string-colour: #EEE;
+
+    font-family: "Allerta", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+
+    background: var(--bg-colour);
+    color: var(--text-colour);
+}
+
+#chart_display {
+    border-collapse: collapse;
+}
+
+.fret {
+    --fret-size: 3rem;
+    width: var(--fret-size);
+    height: var(--fret-size);
+    background: var(--chart-bg-colour);
+    background: linear-gradient(
+        180deg,
+        var(--chart-bg-colour) 0%,
+        var(--chart-bg-colour) 47%,
+        var(--string-colour) 50%,
+        var(--chart-bg-colour) 53%,
+        var(--chart-bg-colour) 100%);
+    border-left: 0.1rem solid #EEE;
+}
+
+.fret.open {
+    background: var(--open-string-colour);
+    border-left: 0;
+}
+
+.fret_num {
+    text-align: center;
+    padding-top: 1rem;
+}
