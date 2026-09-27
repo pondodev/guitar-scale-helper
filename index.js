@@ -77,7 +77,7 @@ let update_chart = () => {
         let string = $(`<tr id="s${s}" class="string"></tr>`);
         // fret_count + 1 so we can also represent an open string
         for (let f = 0; f < inputs.fret_count + 1; ++f) {
-            let fret = $(`<td id="s${s}f${f}" class="fret"></td>`);
+            let fret = $(`<td id="s${s}f${f}" class="fret"><div class="fret_inner"></div></td>`);
             if (f === 0) {
                 fret.addClass("open");
             }
@@ -94,6 +94,13 @@ let update_chart = () => {
         let num = $(`<td class="fret_num">${f}</td>`);
         fret_nums.append(num);
     }
+
+    // TODO: display fret markers for the current scale
+    let fret_marker = $(`<div class="fret_marker"></div>`);
+    $("#s0f1 > .fret_inner").append(fret_marker);
+
+    fret_marker = $(`<div class="fret_marker root_note"></div>`);
+    $("#s1f2 > .fret_inner").append(fret_marker);
 
     chart_display.append(fret_nums);
 }
