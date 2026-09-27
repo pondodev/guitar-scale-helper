@@ -60,8 +60,11 @@
     width: var(--marker-size);
     height: var(--marker-size);
     background: var(--fret-marker-colour);
+    border: 0.1rem solid #222;
     border-radius: 50%;
     margin: auto;
+    text-align: center;
+    color: #222;
 }
 
 .fret_marker.root_note {

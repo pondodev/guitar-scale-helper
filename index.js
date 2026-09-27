@@ -2,6 +2,7 @@
 
 const DEFAULT_STRING_COUNT      = 6;
 const DEFAULT_FRET_COUNT        = 20;
+const DEFAULT_TUNING            = [7, 2, 10, 5, 0, 7]; // E standard, high to low
 const TEXT_INPUT_DEBOUNCE_MS    = 300;
 
 const NOTES = ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"];
@@ -25,8 +26,12 @@ let inputs = {
     scale:          "",
 }
 
-let timer_handles = {}
-let current_scale = []
+let timer_handles = {};
+let current_scale = [];
+// TODO: add custom tunings
+let current_tuning = DEFAULT_TUNING;
+
+let strings = [];
 
 // === bootstrap ===
 
@@ -74,14 +79,8 @@ let update_chart = () => {
     $("#chart_title").text(`${NOTES[inputs.root]} ${inputs.scale}`);
 
     resolve_current_scale();
+    resolve_current_tuning();
     refresh_chart_display();
-
-    // TODO: display fret markers for the current scale
-    let fret_marker = $(`<div class="fret_marker"></div>`);
-    $("#s0f1 > .fret_inner").append(fret_marker);
-
-    fret_marker = $(`<div class="fret_marker root_note"></div>`);
-    $("#s1f2 > .fret_inner").append(fret_marker);
 }
 
 let get_current_scale_intervals = () => {
@@ -115,9 +114,23 @@ let resolve_current_scale = () => {
     $("#scale_display").text(`scale: ${scale_str.trim()}`);
 }
 
+let resolve_current_tuning = () => {
+    strings = [];
+    for (let s = 0; s < inputs.string_count; ++s) {
+        let fretted_notes = [];
+        for (let f = 0; f < inputs.fret_count + 1; ++f) {
+            fretted_notes.push(current_tuning[s] + f);
+        }
+
+        strings.push(fretted_notes);
+    }
+}
+
 let refresh_chart_display = () => {
     let chart_display = $("#chart_display");
     chart_display.empty();
+
+    // create fretboard
 
     for (let s = 0; s < inputs.string_count; ++s) {
         let string = $(`<tr id="s${s}" class="string"></tr>`);
@@ -142,4 +155,26 @@ let refresh_chart_display = () => {
     }
 
     chart_display.append(fret_nums);
+
+    // display fret markers on scale notes
+
+    let add_fret_marker = (note, string, fret, root) => {
+        let fret_marker =
+            $(`<div class="fret_marker ${root ? "root_note" : ""}">${NOTES[note]}</div>`);
+        $(`#s${string}f${fret} > .fret_inner`).append(fret_marker);
+    };
+
+    for (let s = 0; s < strings.length; ++s) {
+        let current_string = strings[s];
+        let base_note = current_tuning[s];
+
+        for (let f = 0; f < current_string.length; ++f) {
+            let note = (base_note + f) % NOTES.length;
+            let is_root = note === current_scale[0];
+
+            if (current_scale.includes(note)) {
+                add_fret_marker(note, s, f, is_root);
+            }
+        }
+    }
 }
